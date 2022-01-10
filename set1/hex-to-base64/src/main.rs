@@ -45,10 +45,36 @@ fn custom_hex_decode(hex: &String) {
         };
         // (N X 16 ** 1) + (N X 16**0)
         let value = left_value * 16_i32.pow(1) + right_value;
+
         char_bytes.push(value);
     }
 
-    println!("this is char_bytes {:?}", char_bytes);
+    // Change each decimal to 8-bit binary representation
+    let binary_representation: Vec<String> = char_bytes
+        .iter()
+        .map(|f| {
+            let mut binary_string = format!("{:b}", f);
+            let zeros_needed = 8 - binary_string.len();
+            binary_string = "0".repeat(zeros_needed) + &binary_string;
+            return binary_string;
+        })
+        .collect();
+
+    let string_rep: String = binary_representation.into_iter().collect();
+    let mut six_bit_representation = String::new();
+    let mut six_bit_vec: Vec<String> = vec![];
+    let mut counter = 0;
+    for i in string_rep.chars() {
+        if counter == 6 {
+            counter = 0;
+            six_bit_vec.push(six_bit_representation.clone());
+            six_bit_representation = String::new();
+        }
+        six_bit_representation += &i.to_string();
+        counter += 1;
+    }
+
+    println!("this is test {:?}", six_bit_vec)
 }
 
 fn main() {
